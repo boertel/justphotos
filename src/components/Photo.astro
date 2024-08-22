@@ -1,0 +1,22 @@
+---
+import { Image } from 'astro:assets';
+
+interface Props {
+  src: string;
+  alt?: string;
+  width: number;
+  height: number;
+  class?: string;
+}
+
+const { src, alt, width, height, class: className } = Astro.props;
+---
+
+<Image
+    class=`transition-all ${className}`
+    src={src}
+    alt={src}
+    width={width }
+    height={height}
+    transition:name="media-image"
+/>

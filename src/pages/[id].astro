@@ -1,0 +1,51 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Sidebar from '../components/Sidebar.astro';
+import Logo from '../components/Logo.astro';
+import Photo from '../components/Photo.astro'
+import CameraIcon from 'phosphor-astro/Camera.astro';
+import ApertureIcon from 'phosphor-astro/Aperture.astro';
+import MetricsIcon from 'phosphor-astro/Spinner.astro';
+import DateIcon from 'phosphor-astro/CalendarBlank.astro';
+import LocationIcon from 'phosphor-astro/MapPin.astro';
+import { photos } from '../data/ben'
+
+export function getStaticPaths() {
+  return photos.map(({ id }) => ({ params: { id }}))
+}
+
+const { id } = Astro.params;
+const photo = photos.find((photo) => photo.id === id)
+---
+
+<Layout title="Benjamin Oertel">
+    <Sidebar>
+        <Logo href="/" />
+
+        <div>
+            <ul class="py-4 pl-4 font-mono font-thin flex flex-col gap-2 group-hover/sidebar:opacity-100 opacity-60 transition-opacity text-sm animate-in">
+                <li class="flex gap-2 items-center"><CameraIcon width="1em" height="1em" />{photo.camera}</li>
+                <li class="flex gap-2 items-center"><ApertureIcon width="1em" height="1em" />{photo.lens}</li>
+                <li class="flex gap-2 items-center">
+                    <MetricsIcon width="1em" height="1em" />
+                    <div class="relative flex">{photo.aperture}</div>
+                    <div class="relative flex before:content-['·']">{photo.shutterSpeed}</div>
+                    <div class="relative flex before:content-['·']">ISO {photo.iso}</div>
+                </li>
+                <li class="flex gap-2 items-center"><DateIcon width="1em" height="1em" />{photo.takenAt}</li>
+                <li class="flex gap-2 items-center"><LocationIcon width="1em" height="1em" />{photo.location}</li>
+            </ul>
+            <h2 class="text-muted flex items-center px-4 py-4">
+                <a href="/from/ben" class="hover:underline" tabindex="-1">@ben</a>
+            </h2>
+        </div>
+    </Sidebar>
+    <section class="relative h-screen flex items-center w-full justify-center">
+        <Photo
+            src={photo.src}
+            width={photo.width}
+            height={photo.height}
+            class="h-full object-contain p-6"
+        />
+    </section>
+</Layout>

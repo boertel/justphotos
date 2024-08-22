@@ -1,0 +1,13 @@
+---
+import logo from '/src/icons/logo.svg?raw';
+
+interface Props {
+	href: string;
+}
+
+const { href, } = Astro.props;
+---
+
+<a href={href} class="p-2 m-2 group">
+    <Fragment set:html={logo} />
+</a>
