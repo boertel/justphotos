@@ -5,7 +5,7 @@ import Logo from '../components/Logo.astro'
 import Photo from '../components/Photo.astro'
 
 const R2 = Astro.locals.runtime.env.R2;
-const { objects } = await R2.list({ include: [ 'customMetadata' ], limit: 100})
+const { objects } = await R2.list({ include: [ 'customMetadata' ], limit: 100 })
 const photos = objects.map(object => {
   return {
     ...object.customMetadata,
