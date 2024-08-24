@@ -1,6 +1,6 @@
 import type { APIContext } from "astro";
 
-export async function GET({ params: { key }, locals }: APIContext) {
+export async function GET({ request, params: { key }, locals }: APIContext) {
   const {
     env: { R2 },
     caches,
@@ -9,7 +9,11 @@ export async function GET({ params: { key }, locals }: APIContext) {
 
   const cache = caches.default;
 
-  let cacheResponse = await cache.match(key);
+  const url = new URL(request.url);
+  const cacheKey = new Request(url.toString(), request);
+
+  //@ts-ignore
+  let cacheResponse = await cache.match(cacheKey);
   if (cacheResponse) {
     console.log(`Cache hit for ${key}`);
     return cacheResponse;
@@ -21,13 +25,14 @@ export async function GET({ params: { key }, locals }: APIContext) {
   }
   const headers = new Headers();
   object.writeHttpMetadata(headers);
-  headers.set("Cache-Control", "s-maxage=10, immutable");
+  headers.set("etag", object.httpEtag);
+  headers.append("Cache-Control", "s-maxage=10, immutable");
 
   const data = await object.arrayBuffer();
   const response = new Response(data, { headers });
 
   //@ts-ignore
-  ctx.waitUntil(cache.put(key, response.clone()));
+  ctx.waitUntil(cache.put(cacheKey, response.clone()));
 
   return response;
 }
