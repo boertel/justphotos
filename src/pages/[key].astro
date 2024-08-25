@@ -9,15 +9,18 @@ import MetricsIcon from 'phosphor-astro/Spinner.astro';
 import DateIcon from 'phosphor-astro/CalendarBlank.astro';
 import LocationIcon from 'phosphor-astro/MapPin.astro';
 
-const { key } = Astro.params;
+import { cache, CachedResponse } from "../utils";
 
-const R2 = Astro.locals.runtime.env.R2;
-const object = await R2.get(key)
-const photo = {
-    ...object.customMetadata,
-    key: object.key,
-    src: `/r2/${object.key}`
-}
+const { key } = Astro.params;
+const response = await cache({ locals: Astro.locals, request: Astro.request }, async ({ R2 }) =>  {
+  const object = await R2.get(key)
+  if (!object) {
+    throw new Error(`Object not found: ${key}`);
+  }
+  return new CachedResponse({ ...object.customMetadata, key, src: `/r2/${key}` }, { headers: { etag: object.httpEtag, }, })
+})
+
+const photo = await response.json()
 ---
 
 <Layout title="Benjamin Oertel">
