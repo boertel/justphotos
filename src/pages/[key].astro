@@ -29,16 +29,16 @@ const photo = await response.json()
 
         <div>
             <ul class="py-4 pl-4 font-mono font-thin flex flex-col gap-2 group-hover/sidebar:opacity-100 opacity-60 transition-opacity text-sm animate-in">
-                <li class="flex gap-2 items-center"><CameraIcon width="1em" height="1em" />{photo.camera}</li>
-                <li class="flex gap-2 items-center"><ApertureIcon width="1em" height="1em" />{photo.lens}</li>
+                <li class="flex gap-2 items-center"><CameraIcon class="shrink-0" width="1em" height="1em" />{photo.camera}</li>
+                <li class="flex gap-2 items-center"><ApertureIcon class="shrink-0" width="1em" height="1em" />{photo.lens}</li>
                 <li class="flex items-center">
-                    <MetricsIcon width="1em" height="1em" />
+                    <MetricsIcon width="1em" height="1em" class="shrink-0" />
                     <div class="relative flex before:w-[8px]">ƒ/{photo.aperture}</div>
                     <div class="relative flex before:w-[16px] before:text-center before:content-['·']">{photo.shutterSpeed}</div>
                     <div class="relative flex before:w-[16px] before:text-center before:content-['·']">ISO {photo.iso}</div>
                 </li>
-                <li class="flex gap-2 items-center"><DateIcon width="1em" height="1em" />{photo.takenAt}</li>
-                {photo.location && <li class="flex gap-2 items-center"><LocationIcon width="1em" height="1em" />{photo.location}</li>}
+                <li class="flex gap-2 items-center"><DateIcon class="shrink-0" width="1em" height="1em" />{photo.takenAt}</li>
+                {photo.location && <li class="flex gap-2 items-center"><LocationIcon class="shrink-0" width="1em" height="1em" />{photo.location}</li>}
             </ul>
             <h2 class="text-muted flex items-center px-4 py-4">
                 <a href="/from/ben" class="hover:underline" tabindex="-1">@ben</a>
@@ -50,6 +50,7 @@ const photo = await response.json()
             src={photo.src}
             width={photo.width}
             height={photo.height}
+            id={photo.key}
             class="h-full object-contain p-6"
         />
     </section>

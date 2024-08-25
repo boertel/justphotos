@@ -35,7 +35,7 @@ const photos = await response.json()
         {photos.map(photo => (
             <figure class="grid break-inside-avoid mb-4 relative group" style="grid-template-rows: 1fr auto;">
                 <a href=`/${photo.key}` class="outline-2 focus:outline-primary outline-none outline-offset-0 outline-primary/0 transition-opacity">
-                    <Photo src={photo.src} width={photo.width} height={photo.height} />
+                    <Photo id={photo.key} src={photo.src} width={photo.width} height={photo.height} />
                 </a>
                 <!--figcaption class="absolute bottom-0 right-0 left-0 bg-black bg-opacity-50 text-xs text-white text-opacity-70 p-2">
                 Caption

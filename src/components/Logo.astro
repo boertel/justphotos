@@ -8,6 +8,6 @@ interface Props {
 const { href, } = Astro.props;
 ---
 
-<a href={href} class="p-2 m-2 group">
+<a href={href} class="p-2 m-2 group" aria-label="Home page">
     <Fragment set:html={logo} />
 </a>
