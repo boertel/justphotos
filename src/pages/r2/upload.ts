@@ -37,10 +37,8 @@ export async function POST({ request, locals }: APIContext) {
       takenAt: exifData.CreateDate.toISOString(),
       width: exifData.ExifImageWidth,
       height: exifData.ExifImageHeight,
+      location: location ? location : undefined,
     };
-    if (location) {
-      customMetadata.location = location;
-    }
   }
 
   const httpMetadata = {
