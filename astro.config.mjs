@@ -6,6 +6,9 @@ import cloudflare from "@astrojs/cloudflare";
 // https://astro.build/config
 export default defineConfig({
   output: "server",
+  redirects: {
+    "/": "/from/ben",
+  },
   integrations: [tailwind()],
   adapter: cloudflare({
     platformProxy: {

@@ -1,27 +1,34 @@
 ---
-import { Image } from 'astro:assets';
+import { Image } from "astro:assets";
 
 interface Props {
   id: string;
   class?: string;
+  loading?: "lazy" | "eager";
   photo: {
     src: string;
     alt?: string;
     width: number;
     height: number;
     srcset?: string;
-  }
+  };
 }
 
-const { id, class: className , photo: { src, alt, srcset, width, height, }} = Astro.props;
+const {
+  id,
+  class: className,
+  loading,
+  photo: { src, alt, srcset, width, height },
+} = Astro.props;
 ---
 
 <Image
-    class=`rounded-md transition-all ${className}`
-    src={src}
-    srcset={srcset}
-    alt={src}
-    width={width }
-    height={height}
-    transition:name=`media-image-${id}`
+  class=`rounded-md transition-all ${className}`
+  src={src}
+  srcset={srcset}
+  alt={src}
+  width={width}
+  height={height}
+  transition:name=`media-image-${id}`
+  loading={loading}
 />

@@ -1,0 +1,94 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Sidebar from "@components/Sidebar.astro";
+import Logo from "@components/Logo.astro";
+import Photo from "@components/Photo.astro";
+import CameraIcon from "phosphor-astro/Camera.astro";
+import ApertureIcon from "phosphor-astro/Aperture.astro";
+import MetricsIcon from "phosphor-astro/Spinner.astro";
+import DateIcon from "phosphor-astro/CalendarBlank.astro";
+import LocationIcon from "phosphor-astro/MapPin.astro";
+
+import { cache, CachedResponse } from "@utils/index";
+
+const response = await cache(
+  { locals: Astro.locals, request: Astro.request },
+  async ({ R2 }) => {
+    const key = `${Astro.params.username}/original/${Astro.params.key}`;
+    const object = await R2.get(key);
+    if (!object) {
+      throw new Error(`Object not found: ${key}`);
+    }
+    return new CachedResponse(object.customMetadata, {
+      headers: { etag: object.httpEtag },
+    });
+  },
+);
+
+const photo = await response.json();
+const { username } = Astro.params;
+---
+
+<Layout title="Benjamin Oertel">
+  <Sidebar>
+    <Logo href="/" />
+
+    <div>
+      <ul
+        class="py-4 pl-4 font-mono font-thin flex flex-col gap-2 group-hover/sidebar:opacity-100 opacity-60 transition-opacity text-sm animate-in"
+      >
+        <li class="flex gap-2 items-center">
+          <CameraIcon class="shrink-0" width="1em" height="1em" />{photo.camera}
+        </li>
+        <li class="flex gap-2 items-center">
+          <ApertureIcon class="shrink-0" width="1em" height="1em" />{photo.lens}
+        </li>
+        <li class="flex items-center">
+          <MetricsIcon width="1em" height="1em" class="shrink-0" />
+          <div class="relative flex before:w-[8px]">ƒ/{photo.aperture}</div>
+          <div
+            class="relative flex before:w-[16px] before:text-center before:content-['·']"
+          >
+            {photo.shutterSpeed}
+          </div>
+          <div
+            class="relative flex before:w-[16px] before:text-center before:content-['·']"
+          >
+            ISO {photo.iso}
+          </div>
+        </li>
+        <li class="flex gap-2 items-center">
+          <DateIcon class="shrink-0" width="1em" height="1em" />{
+            new Intl.DateTimeFormat("en-US", {
+              dateStyle: "medium",
+              timeStyle: "short",
+            }).format(new Date(photo.takenAt))
+          }
+        </li>
+        {
+          photo.location && (
+            <li class="flex gap-2 items-center">
+              <LocationIcon class="shrink-0" width="1em" height="1em" />
+              {photo.location}
+            </li>
+          )
+        }
+      </ul>
+      <h2 class="text-muted flex items-center px-4 py-4">
+        <a href={`/from/${username}`} class="hover:underline" tabindex="-1"
+          >@{username}</a
+        >
+      </h2>
+    </div>
+  </Sidebar>
+  <section
+    class="relative flex items-start md:items-center w-full justify-center md:h-screen"
+  >
+    <Photo
+      photo={photo}
+      id={photo.id}
+      class="h-full object-contain p-6"
+      loading="eager"
+    />
+  </section>
+</Layout>
