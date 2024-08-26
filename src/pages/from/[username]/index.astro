@@ -14,9 +14,11 @@ const response = await cache(
       include: ["customMetadata"],
       limit: 100,
     });
-    const photos = objects.map((object) => {
-      return object.customMetadata;
-    });
+    const photos = objects
+      .map((object) => {
+        return object.customMetadata;
+      })
+      .reverse();
     return new CachedResponse(photos);
   },
 );
@@ -39,7 +41,7 @@ const { username } = Astro.params;
   </Sidebar>
   <section class="sm:columns-1 md:columns-2 lg:columns-3 gap-4 p-4">
     {
-      photos.map((photo) => (
+      photos.map((photo, index) => (
         <figure
           class="grid break-inside-avoid mb-4 relative group"
           style="grid-template-rows: 1fr auto;"
@@ -52,6 +54,7 @@ const { username } = Astro.params;
               id={photo.id}
               photo={photo}
               class="group-hover/photo:scale-105"
+              loading={index < 6 ? "eager" : "lazy"}
             />
           </a>
         </figure>

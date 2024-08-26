@@ -46,7 +46,7 @@ export async function POST({ request, locals }: APIContext) {
     "Content-Type": media.type,
   };
 
-  await R2.put(key, media, { httpMetadata, customMetadata });
+  await R2.put(key, media, { httpMetadata, customMetadata, sha1 });
   return new Response(key);
 }
 
