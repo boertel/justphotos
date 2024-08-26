@@ -2,7 +2,13 @@ import type { APIContext } from "astro";
 import exifr from "exifr";
 
 export async function POST({ request, locals }: APIContext) {
-  const { R2 } = locals.runtime.env;
+  const { R2, API_KEY } = locals.runtime.env;
+
+  const apiKey = request.headers.get("x-api-key");
+
+  if (apiKey !== API_KEY) {
+    return new Response("Unauthorized", { status: 401 });
+  }
 
   const body = await request.formData();
   const media = body.get("media") as File;
