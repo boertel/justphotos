@@ -22,7 +22,7 @@ function upload {
     KEY="$1"
     OUTPUT="$2"
     EXTRAS=$3
-    CMD="http --quiet -f POST $DOMAIN/r2/upload media@$OUTPUT key=$KEY $EXTRAS"
+    CMD="http --quiet -f POST $DOMAIN/r2/upload media@$OUTPUT key=$KEY $EXTRAS X-Api-Key:$API_KEY"
     eval $CMD
 }
 
