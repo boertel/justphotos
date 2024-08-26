@@ -6,6 +6,7 @@ HASH=$(shasum $INPUT | cut -d ' ' -f 1)
 
 DOMAIN=${DOMAIN:-"https://justphotos.pages.dev"}
 USERNAME="ben"
+LOCATION="$2"
 
 function resize {
     EXTENSION="${3:-avif}"
@@ -21,7 +22,7 @@ function resize {
 function upload {
     KEY="$1"
     OUTPUT="$2"
-    EXTRAS=$3
+    EXTRAS="location='$LOCATION' $3"
     CMD="http --quiet -f POST $DOMAIN/r2/upload media@$OUTPUT key=$KEY $EXTRAS X-Api-Key:$API_KEY"
     eval $CMD
 }
@@ -33,3 +34,6 @@ SRCSET="$PREFIX$(resize $INPUT 10), $PREFIX$(resize $INPUT 25), $PREFIX$(resize 
 
 cp $INPUT $HASH.jpg
 upload "$USERNAME/original/$HASH" "$HASH.jpg" "srcset=\"$SRCSET\""
+
+
+echo "$DOMAIN/from/$USERNAME/$HASH"

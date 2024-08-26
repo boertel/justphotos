@@ -25,3 +25,7 @@ pnpm-debug.log*
 
 .wrangler
 .dev.vars
+
+# to avoid tmp files
+*.jpeg
+*.avif

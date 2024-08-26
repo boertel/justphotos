@@ -46,9 +46,13 @@ const { username } = Astro.params;
         >
           <a
             href={`/from/${username}/${photo.id}`}
-            class="outline-2 focus:outline-primary outline-none outline-offset-0 outline-primary/0 transition-opacity"
+            class="outline-2 focus:outline-primary outline-none outline-offset-0 outline-primary/0 transition-opacity group/photo overflow-hidden rounded-md"
           >
-            <Photo id={photo.id} photo={photo} />
+            <Photo
+              id={photo.id}
+              photo={photo}
+              class="group-hover/photo:scale-105"
+            />
           </a>
         </figure>
       ))

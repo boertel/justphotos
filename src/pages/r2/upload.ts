@@ -13,6 +13,7 @@ export async function POST({ request, locals }: APIContext) {
   const body = await request.formData();
   const media = body.get("media") as File;
   const key = body.get("key") as string;
+  const location = body.get("location") as string;
 
   const fileData = await media.arrayBuffer();
   let customMetadata = {};
@@ -36,6 +37,9 @@ export async function POST({ request, locals }: APIContext) {
       width: exifData.ExifImageWidth,
       height: exifData.ExifImageHeight,
     };
+    if (location) {
+      customMetadata.location = location;
+    }
   }
 
   const httpMetadata = {
