@@ -28,4 +28,5 @@ pnpm-debug.log*
 
 # to avoid tmp files
 *.jpeg
+*.jpg
 *.avif
