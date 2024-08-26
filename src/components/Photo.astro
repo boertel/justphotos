@@ -3,19 +3,23 @@ import { Image } from 'astro:assets';
 
 interface Props {
   id: string;
-  src: string;
-  alt?: string;
-  width: number;
-  height: number;
   class?: string;
+  photo: {
+    src: string;
+    alt?: string;
+    width: number;
+    height: number;
+    srcset?: string;
+  }
 }
 
-const { id, src, alt, width, height, class: className } = Astro.props;
+const { id, class: className , photo: { src, alt, srcset, width, height, }} = Astro.props;
 ---
 
 <Image
     class=`rounded-md transition-all ${className}`
     src={src}
+    srcset={srcset}
     alt={src}
     width={width }
     height={height}

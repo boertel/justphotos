@@ -6,19 +6,14 @@ import Photo from '../components/Photo.astro'
 import { cache, CachedResponse } from "../utils";
 
 const response = await cache({ locals: Astro.locals, request: Astro.request }, async ({ R2 }) => {
-  const { objects } = await R2.list({ include: [ 'customMetadata' ], limit: 100 })
+    const { objects } = await R2.list({ prefix: 'ben/original', include: [ 'customMetadata' ], limit: 100 })
   const photos = objects.map(object => {
-    return {
-      ...object.customMetadata,
-      key: object.key,
-      src: `/r2/${object.key}`
-    }
+    return object.customMetadata
   })
   return new CachedResponse(photos)
 })
 
 const photos = await response.json()
-
 ---
 
 <Layout title="Benjamin Oertel">
@@ -34,8 +29,8 @@ const photos = await response.json()
     <section class="sm:columns-1 md:columns-2 lg:columns-3 gap-4 p-4">
         {photos.map(photo => (
             <figure class="grid break-inside-avoid mb-4 relative group" style="grid-template-rows: 1fr auto;">
-                <a href=`/${photo.key}` class="outline-2 focus:outline-primary outline-none outline-offset-0 outline-primary/0 transition-opacity">
-                    <Photo id={photo.key} src={photo.src} width={photo.width} height={photo.height} />
+                <a href=`/${photo.id}` class="outline-2 focus:outline-primary outline-none outline-offset-0 outline-primary/0 transition-opacity">
+                    <Photo id={photo.id} photo={photo} />
                 </a>
                 <!--figcaption class="absolute bottom-0 right-0 left-0 bg-black bg-opacity-50 text-xs text-white text-opacity-70 p-2">
                 Caption

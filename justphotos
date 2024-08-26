@@ -1,0 +1,35 @@
+#!/usr/bin/env zsh
+
+INPUT="$1"
+
+HASH=$(shasum $INPUT | cut -d ' ' -f 1)
+
+DOMAIN=${DOMAIN:-"https://justphotos.pages.dev"}
+USERNAME="ben"
+
+function resize {
+    EXTENSION="${3:-avif}"
+    OUTPUT="$HASH-$2.$EXTENSION"
+    convert $1 -resize $2% $OUTPUT
+    WIDTH=$(identify -format "%w" $OUTPUT)
+
+    upload "$USERNAME/$EXTENSION/$OUTPUT" "$OUTPUT"
+
+    echo "$USERNAME/$EXTENSION/$OUTPUT ${WIDTH}w"
+}
+
+function upload {
+    KEY="$1"
+    OUTPUT="$2"
+    EXTRAS=$3
+    CMD="http --quiet -f POST $DOMAIN/r2/upload media@$OUTPUT key=$KEY $EXTRAS"
+    eval $CMD
+}
+
+
+PREFIX="/r2/"
+
+SRCSET="$PREFIX$(resize $INPUT 10), $PREFIX$(resize $INPUT 25), $PREFIX$(resize $INPUT 50), $PREFIX$(resize $INPUT 100)"
+
+cp $INPUT $HASH.jpg
+upload "$USERNAME/original/$HASH" "$HASH.jpg" "srcset=\"$SRCSET\""

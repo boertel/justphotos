@@ -11,13 +11,13 @@ import LocationIcon from 'phosphor-astro/MapPin.astro';
 
 import { cache, CachedResponse } from "../utils";
 
-const { key } = Astro.params;
 const response = await cache({ locals: Astro.locals, request: Astro.request }, async ({ R2 }) =>  {
+  const key = `ben/original/${Astro.params.key}`
   const object = await R2.get(key)
   if (!object) {
     throw new Error(`Object not found: ${key}`);
   }
-  return new CachedResponse({ ...object.customMetadata, key, src: `/r2/${key}` }, { headers: { etag: object.httpEtag, }, })
+  return new CachedResponse(object.customMetadata, { headers: { etag: object.httpEtag, }, })
 })
 
 const photo = await response.json()
@@ -46,12 +46,6 @@ const photo = await response.json()
         </div>
     </Sidebar>
     <section class="relative flex items-start md:items-center w-full justify-center md:h-screen">
-        <Photo
-            src={photo.src}
-            width={photo.width}
-            height={photo.height}
-            id={photo.key}
-            class="h-full object-contain p-6"
-        />
+        <Photo photo={photo} id={photo.id} class="h-full object-contain p-6" />
     </section>
 </Layout>

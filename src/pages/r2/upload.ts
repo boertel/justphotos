@@ -6,26 +6,36 @@ export async function POST({ request, locals }: APIContext) {
 
   const body = await request.formData();
   const media = body.get("media") as File;
+  const key = body.get("key") as string;
+
   const fileData = await media.arrayBuffer();
-  const sha1 = await generateSha1(fileData);
-  const exifData = await exifr.parse(fileData);
-  const customMetadata = {
-    sha1,
-    camera: `${exifData.Make} ${exifData.Model}`,
-    lens: exifData.LensModel,
-    aperture: exifData.FNumber,
-    shutterSpeed: `1/${Math.round(1 / exifData.ExposureTime)}s`,
-    iso: exifData.ISO,
-    takenAt: exifData.CreateDate.toISOString(),
-    width: exifData.ExifImageWidth,
-    height: exifData.ExifImageHeight,
-  };
+  let customMetadata = {};
+
+  if (media.type === "image/jpeg") {
+    const exifData = await exifr.parse(fileData);
+    const sha1 = await generateSha1(fileData);
+    const srcset = body.get("srcset") as string;
+    customMetadata = {
+      sha1,
+      id: sha1,
+      key,
+      srcset,
+      src: `/r2/${key}`,
+      camera: `${exifData.Make} ${exifData.Model}`,
+      lens: exifData.LensModel,
+      aperture: exifData.FNumber,
+      shutterSpeed: `1/${Math.round(1 / exifData.ExposureTime)}s`,
+      iso: exifData.ISO,
+      takenAt: exifData.CreateDate.toISOString(),
+      width: exifData.ExifImageWidth,
+      height: exifData.ExifImageHeight,
+    };
+  }
 
   const httpMetadata = {
     "Content-Type": media.type,
   };
 
-  const key = sha1;
   await R2.put(key, media, { httpMetadata, customMetadata });
   return new Response(key);
 }
