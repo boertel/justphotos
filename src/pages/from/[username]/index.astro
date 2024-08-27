@@ -27,19 +27,25 @@ const photos = await response.json();
 const { username } = Astro.params;
 ---
 
-<Layout title="Benjamin Oertel">
-  <Sidebar>
-    <Logo href="/" />
-    <div class="flex flex-col p-4 gap-4">
-      <h1 class="text-6xl font-mono tracking-tighter">Benjamin Oertel</h1>
-      <h2 class="text-muted flex items-center">
-        <a href={`/from/${username}`} class="hover:underline" tabindex="-1"
-          >@{username}</a
-        >
-      </h2>
-    </div>
+<Layout
+  title="Benjamin Oertel"
+  class="[grid-template-areas:'logo''sidebar''content'] md:[grid-template-areas:'logo_content''sidebar_content']"
+>
+  <Logo href="/" />
+
+  <Sidebar class="flex flex-col p-4 gap-4">
+    <h1 class="text-6xl font-mono tracking-tighter">Benjamin Oertel</h1>
+    <h2 class="text-muted flex items-center">
+      <a href={`/from/${username}`} class="hover:underline" tabindex="-1"
+        >@{username}</a
+      >
+    </h2>
   </Sidebar>
-  <section class="sm:columns-1 md:columns-2 lg:columns-3 gap-4 p-4">
+
+  <section
+    class="sm:columns-1 md:columns-2 lg:columns-3 gap-4 p-4"
+    style="grid-area: content"
+  >
     {
       photos.map((photo, index) => (
         <figure
@@ -53,7 +59,6 @@ const { username } = Astro.params;
             <Photo
               id={photo.id}
               photo={photo}
-              class="group-hover/photo:scale-105 duration-300"
               loading={index < 6 ? "eager" : "lazy"}
             />
           </a>

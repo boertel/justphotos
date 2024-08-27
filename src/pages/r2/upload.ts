@@ -31,14 +31,22 @@ export async function POST({ request, locals }: APIContext) {
       src: `/r2/${key}`,
       camera: `${exifData.Make} ${exifData.Model}`,
       lens: exifData.LensModel,
-      aperture: exifData.FNumber,
-      shutterSpeed: `1/${Math.round(1 / exifData.ExposureTime)}s`,
+      aperture: isNaN(exifData.FNumber) ? undefined : exifData.FNumber,
+      shutterSpeed: exifData.ExposureTime
+        ? `1/${Math.round(1 / exifData.ExposureTime)}s`
+        : undefined,
       iso: exifData.ISO,
       takenAt: exifData.CreateDate.toISOString(),
       width: exifData.ExifImageWidth,
       height: exifData.ExifImageHeight,
       location: location ? location : undefined,
     };
+
+    for (const key in customMetadata) {
+      if (customMetadata[key] === undefined) {
+        delete customMetadata[key];
+      }
+    }
   }
 
   const httpMetadata = {

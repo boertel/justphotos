@@ -26,62 +26,65 @@ const response = await cache(
 );
 
 const photo = await response.json();
+console.log(photo.lens);
 const { username } = Astro.params;
 ---
 
-<Layout title="Benjamin Oertel">
-  <Sidebar>
-    <Logo href="/" />
+<Layout
+  title="Benjamin Oertel"
+  class="[grid-template-areas:'logo''content''sidebar'] md:[grid-template-areas:'logo_content''sidebar_content']"
+>
+  <Logo href="/" />
 
-    <div>
-      <ul
-        class="py-4 pl-4 font-mono font-thin flex flex-col gap-2 group-hover/sidebar:opacity-100 opacity-60 transition-opacity text-sm animate-in"
-      >
-        <li class="flex gap-2 items-center">
-          <CameraIcon class="shrink-0" width="1em" height="1em" />{photo.camera}
-        </li>
-        <li class="flex gap-2 items-center">
-          <ApertureIcon class="shrink-0" width="1em" height="1em" />{photo.lens}
-        </li>
-        <li class="flex items-center">
-          <MetricsIcon width="1em" height="1em" class="shrink-0" />
-          <div class="relative flex before:w-[8px]">ƒ/{photo.aperture}</div>
-          <div
-            class="relative flex before:w-[16px] before:text-center before:content-['·']"
-          >
-            {photo.shutterSpeed}
-          </div>
-          <div
-            class="relative flex before:w-[16px] before:text-center before:content-['·']"
-          >
-            ISO {photo.iso}
-          </div>
-        </li>
-        <li class="flex gap-2 items-center">
-          <DateIcon class="shrink-0" width="1em" height="1em" />{
-            new Intl.DateTimeFormat("en-US", {
-              dateStyle: "medium",
-              timeStyle: "short",
-            }).format(new Date(photo.takenAt))
-          }
-        </li>
-        {
-          photo.location && (
-            <li class="flex gap-2 items-center">
-              <LocationIcon class="shrink-0" width="1em" height="1em" />
-              {photo.location}
-            </li>
-          )
+  <Sidebar>
+    <ul
+      class="py-4 pl-4 font-mono font-thin flex flex-col gap-2 group-hover/sidebar:opacity-100 opacity-60 transition-opacity text-sm animate-in"
+    >
+      <li class="flex gap-2 items-center">
+        <CameraIcon class="shrink-0" width="1em" height="1em" />{photo.camera}
+      </li>
+      <li class="flex gap-2 items-center">
+        <ApertureIcon class="shrink-0" width="1em" height="1em" />{
+          photo.lens || "–"
         }
-      </ul>
-      <h2 class="text-muted flex items-center px-4 py-4">
-        <a href={`/from/${username}`} class="hover:underline" tabindex="-1"
-          >@{username}</a
+      </li>
+      <li class="flex items-center">
+        <MetricsIcon width="1em" height="1em" class="shrink-0" />
+        <div class="relative flex before:w-[8px]">
+          {photo.aperture ? `ƒ/${photo.aperture}` : "–"}
+        </div>
+        <div
+          class="relative flex before:w-[16px] before:text-center before:content-['·']"
         >
-      </h2>
-    </div>
+          {photo.shutterSpeed}
+        </div>
+        <div
+          class="relative flex before:w-[16px] before:text-center before:content-['·']"
+        >
+          ISO {photo.iso}
+        </div>
+      </li>
+      <li class="flex gap-2 items-center">
+        <DateIcon class="shrink-0" width="1em" height="1em" />{
+          new Intl.DateTimeFormat("en-US", {
+            dateStyle: "medium",
+            timeStyle: "short",
+          }).format(new Date(photo.takenAt))
+        }
+      </li>
+      <li class="flex gap-2 items-center">
+        <LocationIcon class="shrink-0" width="1em" height="1em" />
+        {photo.location || "–"}
+      </li>
+    </ul>
+    <h2 class="text-muted flex items-center px-4 py-4">
+      <a href={`/from/${username}`} class="hover:underline" tabindex="-1"
+        >@{username}</a
+      >
+    </h2>
   </Sidebar>
   <section
+    style="grid-area: content;"
     class="relative flex items-start md:items-center w-full justify-center md:h-screen"
   >
     <Photo
