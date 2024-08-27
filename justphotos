@@ -11,7 +11,7 @@ LOCATION="$2"
 function resize {
     EXTENSION="${3:-avif}"
     OUTPUT="$HASH-$2.$EXTENSION"
-    convert $1 -resize $2% $OUTPUT
+    convert $1 -auto-orient -resize $2% $OUTPUT
     WIDTH=$(identify -format "%w" $OUTPUT)
 
     upload "$USERNAME/$EXTENSION/$OUTPUT" "$OUTPUT"
@@ -29,11 +29,9 @@ function upload {
 
 
 PREFIX="/r2/"
-
 SRCSET="$PREFIX$(resize $INPUT 10), $PREFIX$(resize $INPUT 25), $PREFIX$(resize $INPUT 50), $PREFIX$(resize $INPUT 100)"
 
 cp $INPUT $HASH.jpg
 upload "$USERNAME/original/$HASH" "$HASH.jpg" "srcset=\"$SRCSET\""
-
 
 echo "$DOMAIN/from/$USERNAME/$HASH"
