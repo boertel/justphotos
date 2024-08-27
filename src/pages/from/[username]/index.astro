@@ -53,7 +53,7 @@ const { username } = Astro.params;
             <Photo
               id={photo.id}
               photo={photo}
-              class="group-hover/photo:scale-105"
+              class="group-hover/photo:scale-105 duration-300"
               loading={index < 6 ? "eager" : "lazy"}
             />
           </a>
