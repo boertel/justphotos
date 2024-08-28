@@ -85,12 +85,12 @@ const { username } = Astro.params;
   </Sidebar>
   <section
     style="grid-area: content;"
-    class="relative flex items-start md:items-center w-full justify-center md:h-screen"
+    class="relative flex items-start md:items-center w-full justify-center md:h-screen p-2 md:p-6"
   >
     <Photo
       photo={photo}
       id={photo.id}
-      class="h-full object-contain p-6"
+      class="h-full object-contain"
       loading="eager"
     />
   </section>
