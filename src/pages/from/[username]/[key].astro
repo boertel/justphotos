@@ -95,3 +95,11 @@ const { username } = Astro.params;
     />
   </section>
 </Layout>
+
+<script>
+  window.addEventListener("keydown", function (evt) {
+    if (evt.key === "Escape") {
+      history.back();
+    }
+  });
+</script>
