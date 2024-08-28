@@ -10,6 +10,7 @@ export async function GET({ request, params: { key }, locals }: APIContext) {
     }
     return new CachedResponse(await object.arrayBuffer(), {
       headers: {
+        "Content-Type": object.customMetadata.contentType,
         etag: object.httpEtag,
       },
     });

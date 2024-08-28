@@ -16,17 +16,20 @@ export async function POST({ request, locals }: APIContext) {
   const location = body.get("location") as string;
 
   const fileData = await media.arrayBuffer();
-  let customMetadata = {};
 
   const sha1 = await generateSha1(fileData);
+
+  let customMetadata = {
+    contentType: media.type,
+    sha1,
+    id: sha1,
+    key,
+  };
 
   if (media.type === "image/jpeg") {
     const exifData = await exifr.parse(fileData);
     const srcset = body.get("srcset") as string;
     customMetadata = {
-      sha1,
-      id: sha1,
-      key,
       srcset,
       src: `/r2/${key}`,
       camera: `${exifData.Make} ${exifData.Model}`,
