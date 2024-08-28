@@ -22,7 +22,7 @@ const { title, class: className } = Astro.props;
   </head>
   <body>
     <main
-      class={`grid h-full grid-cols-1 md:grid-cols-[300px,1fr] md:grid-rows-[min-content,1fr] auto-rows-min ${className || ""}`}
+      class={`grid min-h-full grid-cols-1 md:grid-cols-[300px,1fr] md:grid-rows-[min-content,1fr] auto-rows-min ${className || ""}`}
     >
       <slot />
     </main>

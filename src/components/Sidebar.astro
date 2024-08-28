@@ -7,7 +7,7 @@ const { class: className } = Astro.props;
 ---
 
 <aside
-  class={`flex flex-col justify-end ${className}`}
+  class={`flex flex-col justify-end md:sticky md:top-0 md:h-screen ${className}`}
   style="grid-area: sidebar"
 >
   <slot />
