@@ -37,7 +37,7 @@ export class CachedResponse extends Response {
     super(formattedBody, {
       headers: {
         ...options.headers,
-        "Cache-Control": "maxage=3600, s-maxage=3600, immutable",
+        "Cache-Control": "public, maxage=3600, s-maxage=3600, immutable",
       },
     });
   }
