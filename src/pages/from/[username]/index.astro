@@ -65,24 +65,5 @@ const { username } = Astro.params;
         </figure>
       ))
     }
-    {
-      photos.map((photo, index) => (
-        <figure
-          class="grid break-inside-avoid mb-4 relative group"
-          style="grid-template-rows: 1fr auto;"
-        >
-          <a
-            href={`/from/${username}/${photo.id}`}
-            class="outline-2 focus:outline-primary outline-none outline-offset-0 outline-primary/0 transition-opacity group/photo overflow-hidden rounded-md"
-          >
-            <Photo
-              id={photo.id}
-              photo={photo}
-              loading={index < 6 ? "eager" : "lazy"}
-            />
-          </a>
-        </figure>
-      ))
-    }
   </section>
 </Layout>
