@@ -26,7 +26,6 @@ const response = await cache(
 );
 
 const photo = await response.json();
-console.log(photo.lens);
 const { username } = Astro.params;
 ---
 
@@ -44,9 +43,10 @@ const { username } = Astro.params;
         <CameraIcon class="shrink-0" width="1em" height="1em" />{photo.camera}
       </li>
       <li class="flex gap-2 items-center">
-        <ApertureIcon class="shrink-0" width="1em" height="1em" />{
-          photo.lens || "–"
-        }
+        <ApertureIcon class="shrink-0" width="1em" height="1em" />{photo.lens}
+        <span class="opacity-60" title="35mm equivalent"
+          >{`${photo.focalLengthIn35mmFormat}mm`}</span
+        >
       </li>
       <li class="flex">
         <MetricsIcon width="1em" height="1em" class="mt-[3px] shrink-0" />
@@ -64,11 +64,13 @@ const { username } = Astro.params;
           >
             ISO {photo.iso}
           </div>
-          <div
-            class="relative flex before:w-[16px] before:text-center before:content-['·']"
-          >
-            ev{photo.exposureCompensation}
-          </div>
+          {
+            photo.exposureCompensation !== "0" ? (
+              <div class="relative flex before:w-[16px] before:text-center before:content-['·']">
+                ev{photo.exposureCompensation}
+              </div>
+            ) : null
+          }
         </div>
       </li>
       <li class="flex gap-2 items-center">

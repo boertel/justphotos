@@ -29,13 +29,20 @@ export async function POST({ request, locals }: APIContext) {
   if (media.type === "image/jpeg") {
     const exifData = await exifr.parse(fileData);
     const srcset = body.get("srcset") as string;
+    console.log(exifData);
+    let camera = `${exifData.Model}`;
+    if (exifData.Make.toLowerCase() === "fujifilm") {
+      camera = `${exifData.Make} ${camera}`;
+    }
     customMetadata = {
       ...customMetadata,
       //  @ts-ignore
       srcset,
       src: `/r2/${key}`,
-      camera: `${exifData.Model}`,
-      lens: exifData.LensModel || `${exifData.FocalLengthIn35mmFormat}mm`,
+      camera,
+      lens: exifData.LensModel,
+      focalLengthIn35mmFormat: exifData.FocalLengthIn35mmFormat,
+      timestamp: exifData.DateTimeOriginal.getTime(),
       aperture: isNaN(exifData.FNumber) ? undefined : exifData.FNumber,
       shutterSpeed: exifData.ExposureTime
         ? `1/${Math.round(1 / exifData.ExposureTime)}s`
@@ -59,7 +66,11 @@ export async function POST({ request, locals }: APIContext) {
     "Content-Type": media.type,
   };
 
-  await R2.put(key, media, { httpMetadata, customMetadata, sha1 });
+  const result = await R2.put(key, media, {
+    httpMetadata,
+    customMetadata,
+    sha1,
+  });
   return new Response(key);
 }
 

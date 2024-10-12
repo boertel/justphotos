@@ -18,7 +18,7 @@ const response = await cache(
       .map((object) => {
         return object.customMetadata;
       })
-      .reverse();
+      .sort((a, z) => z.timestamp - a.timestamp);
     return new CachedResponse(photos);
   },
 );
