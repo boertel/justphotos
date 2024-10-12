@@ -30,6 +30,7 @@ export async function POST({ request, locals }: APIContext) {
     const exifData = await exifr.parse(fileData);
     const srcset = body.get("srcset") as string;
     customMetadata = {
+      ...customMetadata,
       //  @ts-ignore
       srcset,
       src: `/r2/${key}`,
