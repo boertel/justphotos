@@ -25,6 +25,10 @@ const response = await cache(
   },
 );
 
+if (response.status !== 200) {
+  return Astro.redirect("/404");
+}
+
 const photo = await response.json();
 const { username } = Astro.params;
 ---
