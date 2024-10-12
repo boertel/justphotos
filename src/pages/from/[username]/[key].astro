@@ -48,20 +48,27 @@ const { username } = Astro.params;
           photo.lens || "–"
         }
       </li>
-      <li class="flex items-center">
-        <MetricsIcon width="1em" height="1em" class="shrink-0" />
-        <div class="relative flex before:w-[8px]">
-          {photo.aperture ? `ƒ/${photo.aperture}` : "–"}
-        </div>
-        <div
-          class="relative flex before:w-[16px] before:text-center before:content-['·']"
-        >
-          {photo.shutterSpeed}
-        </div>
-        <div
-          class="relative flex before:w-[16px] before:text-center before:content-['·']"
-        >
-          ISO {photo.iso}
+      <li class="flex">
+        <MetricsIcon width="1em" height="1em" class="mt-[3px] shrink-0" />
+        <div class="flex items-center flex-wrap">
+          <div class="relative flex before:w-[8px]">
+            {photo.aperture ? `ƒ/${photo.aperture}` : "–"}
+          </div>
+          <div
+            class="relative flex before:w-[16px] before:text-center before:content-['·']"
+          >
+            {photo.shutterSpeed}
+          </div>
+          <div
+            class="relative flex before:w-[16px] before:text-center before:content-['·']"
+          >
+            ISO {photo.iso}
+          </div>
+          <div
+            class="relative flex before:w-[16px] before:text-center before:content-['·']"
+          >
+            ev{photo.exposureCompensation}
+          </div>
         </div>
       </li>
       <li class="flex gap-2 items-center">

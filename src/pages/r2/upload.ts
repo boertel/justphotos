@@ -33,13 +33,14 @@ export async function POST({ request, locals }: APIContext) {
       //  @ts-ignore
       srcset,
       src: `/r2/${key}`,
-      camera: `${exifData.Make} ${exifData.Model}`,
-      lens: exifData.LensModel,
+      camera: `${exifData.Model}`,
+      lens: exifData.LensModel || `${exifData.FocalLengthIn35mmFormat}mm`,
       aperture: isNaN(exifData.FNumber) ? undefined : exifData.FNumber,
       shutterSpeed: exifData.ExposureTime
         ? `1/${Math.round(1 / exifData.ExposureTime)}s`
         : undefined,
       iso: exifData.ISO,
+      exposureCompensation: exifData.ExposureCompensation,
       takenAt: exifData.CreateDate.toISOString(),
       width: exifData.ExifImageWidth,
       height: exifData.ExifImageHeight,
