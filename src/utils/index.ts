@@ -12,11 +12,16 @@ export async function cache({ request, locals }, callback) {
 
   //@ts-ignore
   let cacheResponse = await _cache.match(cacheKey);
+  console.log(cacheKey, cacheResponse);
   if (cacheResponse) {
-    console.log(`Cache hit for ${cacheKey.url.toString()}`);
+    console.log(
+      `[utils/index.ts:cache] Cache hit for ${cacheKey.url.toString()}`,
+    );
     return cacheResponse;
   }
-  console.log(`Cache miss for ${cacheKey.url.toString()}`);
+  console.log(
+    `[utils/index.ts:cache] Cache miss for ${cacheKey.url.toString()}`,
+  );
 
   try {
     const response = await callback({ R2 });
