@@ -12,7 +12,7 @@ export async function cache({ request, locals }, callback) {
 
   //@ts-ignore
   let cacheResponse = await _cache.match(cacheKey);
-  console.log(cacheKey, cacheResponse);
+  console.log(JSON.stringify(cacheResponse));
   if (cacheResponse) {
     console.log(
       `[utils/index.ts:cache] Cache hit for ${cacheKey.url.toString()}`,
