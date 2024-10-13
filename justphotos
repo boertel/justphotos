@@ -1,37 +1,55 @@
 #!/usr/bin/env zsh
 
-INPUT="$1"
-
-HASH=$(shasum $INPUT | cut -d ' ' -f 1)
-
 DOMAIN=${DOMAIN:-"https://justphotos.pages.dev"}
 USERNAME="ben"
-LOCATION="$2"
+PREFIX="/r2/"
+TMP_DIR="/tmp/justphotos"
+
+mkdir -p $TMP_DIR
+
 
 function resize {
     EXTENSION="${3:-avif}"
     OUTPUT="$HASH-$2.$EXTENSION"
-    convert $1 -auto-orient -resize $2% $OUTPUT
-    WIDTH=$(identify -format "%w" $OUTPUT)
+    TMP_FILE="$TMP_DIR/$OUTPUT"
+    convert $1 -auto-orient -resize $2% $TMP_FILE
+    WIDTH=$(identify -format "%w" $TMP_FILE)
 
-    upload "$USERNAME/$EXTENSION/$OUTPUT" "$OUTPUT"
+    upload "$USERNAME/$EXTENSION/$OUTPUT" "$TMP_FILE"
 
     echo "$USERNAME/$EXTENSION/$OUTPUT ${WIDTH}w"
 }
 
 function upload {
     KEY="$1"
-    OUTPUT="$2"
+    MEDIA="$2"
     EXTRAS="location='$LOCATION' $3"
-    CMD="http --quiet -f POST $DOMAIN/r2/upload media@$OUTPUT key=$KEY $EXTRAS X-Api-Key:$API_KEY"
+    CMD="http --quiet -f POST $DOMAIN/r2/upload media@$MEDIA key=$KEY $EXTRAS X-Api-Key:$API_KEY"
     eval $CMD
 }
 
+function process {
+    HASH=$(shasum $INPUT | cut -d ' ' -f 1)
+    SRCSET="$PREFIX$(resize $INPUT 10), $PREFIX$(resize $INPUT 25), $PREFIX$(resize $INPUT 50), $PREFIX$(resize $INPUT 100)"
 
-PREFIX="/r2/"
-SRCSET="$PREFIX$(resize $INPUT 10), $PREFIX$(resize $INPUT 25), $PREFIX$(resize $INPUT 50), $PREFIX$(resize $INPUT 100)"
+    TMP_FILE="$TMP_DIR/$HASH.jpg"
+    cp $INPUT $TMP_FILE
+    upload "$USERNAME/original/$HASH" "$TMP_FILE" "srcset=\"$SRCSET\""
 
-cp $INPUT $HASH.jpg
-upload "$USERNAME/original/$HASH" "$HASH.jpg" "srcset=\"$SRCSET\""
+    echo "$DOMAIN/from/$USERNAME/$HASH"
+}
 
-echo "$DOMAIN/from/$USERNAME/$HASH"
+
+LOCATION="$1"
+
+shift
+
+for INPUT in "$@"; do
+  if [ -f "$INPUT" ]; then
+    process "$INPUT"
+  else
+    echo "File not found: $INPUT"
+  fi
+done
+
+rm -rf $TMP_DIR
