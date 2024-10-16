@@ -29,33 +29,30 @@ const { username } = Astro.params;
 
 <Layout
   title="Benjamin Oertel"
-  class="[grid-template-areas:'logo''sidebar''content'] md:[grid-template-areas:'logo_content''sidebar_content']"
+  class="min-h-screen grid grid-cols-[min-content_1fr] [grid-template-areas:'sidebar_sidebar''content_content''logo_footer'] md:grid-cols-[300px_auto] md:grid-rows-[min-content_1fr_min-content] md:[grid-template-areas:'logo_content''sidebar_content''footer_content']"
 >
-  <Logo href="/" />
+  <Logo
+    href="/"
+    class="p-page sticky bottom-0 md:bottom-auto md:top-0 z-10 bg-black"
+  />
 
-  <Sidebar class="flex flex-col p-4 gap-4">
+  <Sidebar
+    class="flex flex-col md:fixed bottom-0 z-10 w-[300px] p-page md:mb-[26px]"
+  >
     <h1 class="text-6xl font-mono tracking-tighter">Benjamin Oertel</h1>
-    <h2 class="text-muted flex items-center">
-      <a href={`/from/${username}`} class="hover:underline" tabindex="-1"
-        >@{username}</a
-      >
-    </h2>
   </Sidebar>
 
   <section
-    class="sm:columns-1 md:columns-2 lg:columns-3 gap-4 p-4"
-    style="grid-area: content"
+    class="sm:columns-1 md:columns-2 lg:columns-3 gap-[var(--gap)]"
+    style="grid-area: content; --gap: 0.25rem;"
   >
     {
       photos.map((photo, index) => (
         <figure
-          class="grid break-inside-avoid mb-4 relative group"
+          class="grid break-inside-avoid relative group mb-[var(--gap)] last:mb-0"
           style="grid-template-rows: 1fr auto;"
         >
-          <a
-            href={`/from/${username}/${photo.id}`}
-            class="outline-2 focus:outline-primary outline-none outline-offset-0 outline-primary/0 transition-opacity group/photo overflow-hidden rounded-md"
-          >
+          <a href={`/from/${username}/${photo.id}`} class="group/photo">
             <Photo
               id={photo.id}
               photo={photo}
@@ -66,4 +63,14 @@ const { username } = Astro.params;
       ))
     }
   </section>
+
+  <footer
+    style="grid-area: footer"
+    class="bg-black sticky bottom-0 py-page z-10 text-sm flex items-center pr-page"
+  >
+    <span class="text-muted">just photos from&nbsp;</span>
+    <a href={`/from/${username}`} class="hover:underline" tabindex="-1"
+      >{username}</a
+    >
+  </footer>
 </Layout>

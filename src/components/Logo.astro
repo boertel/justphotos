@@ -2,15 +2,16 @@
 import logo from "/src/icons/logo.svg?raw";
 
 interface Props {
+  class?: string;
   href: string;
 }
 
-const { href } = Astro.props;
+const { href, class: className } = Astro.props;
 ---
 
 <a
   href={href}
-  class="p-2 m-2 group text-3xl md:text-7xl absolute z-10"
+  class=`group text-3xl md:text-7xl ${className}`
   style="grid-area: logo"
   aria-label="Home page"
 >

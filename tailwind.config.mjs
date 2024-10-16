@@ -19,6 +19,9 @@ export default {
           DEFAULT: colors.zinc["500"],
         },
       },
+      spacing: {
+        page: "0.5rem",
+      },
     },
   },
   safelist: [

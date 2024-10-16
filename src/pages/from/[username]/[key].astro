@@ -35,13 +35,13 @@ const { username } = Astro.params;
 
 <Layout
   title="Benjamin Oertel"
-  class="[grid-template-areas:'logo''content''sidebar'] md:[grid-template-areas:'logo_content''sidebar_content']"
+  class="grid grid-cols-[min-content_1fr] [grid-template-areas:'content_content''sidebar_sidebar''logo_footer'] md:grid-cols-[300px_auto] md:grid-rows-[min-content_1fr_min-content] md:[grid-template-areas:'logo_content''sidebar_content''footer_content']"
 >
-  <Logo href="/" />
+  <Logo href="/" class="p-page sticky top-0" />
 
-  <Sidebar>
+  <Sidebar class="px-page py-6">
     <ul
-      class="py-4 pl-4 font-mono font-thin flex flex-col gap-2 group-hover/sidebar:opacity-100 opacity-60 transition-opacity text-sm animate-in"
+      class="font-mono font-thin flex flex-col gap-2 group-hover/sidebar:opacity-100 opacity-60 transition-opacity text-sm animate-in"
     >
       <li class="flex gap-2 items-center">
         <CameraIcon class="shrink-0" width="1em" height="1em" />{photo.camera}
@@ -49,7 +49,7 @@ const { username } = Astro.params;
       <li class="flex gap-2 items-center">
         <ApertureIcon class="shrink-0" width="1em" height="1em" />{photo.lens}
         <span class="opacity-60" title="35mm equivalent"
-          >{`${photo.focalLengthIn35mmFormat}mm`}</span
+          >{photo.focalLengthIn35mmFormat}mm</span
         >
       </li>
       <li class="flex">
@@ -90,23 +90,26 @@ const { username } = Astro.params;
         {photo.location || "–"}
       </li>
     </ul>
-    <h2 class="text-muted flex items-center px-4 py-4">
-      <a href={`/from/${username}`} class="hover:underline" tabindex="-1"
-        >@{username}</a
-      >
-    </h2>
   </Sidebar>
+
   <section
     style="grid-area: content;"
-    class="relative flex items-start md:items-center w-full justify-center md:h-screen p-2 md:p-6"
+    class="h-screen flex items-center justify-center"
   >
     <Photo
       photo={photo}
       id={photo.id}
-      class="h-full object-contain"
+      class="h-auto md:h-full object-contain"
       loading="eager"
     />
   </section>
+
+  <footer style="grid-area: footer" class="text-sm flex items-center p-page">
+    <span class="text-muted">just photos from&nbsp;</span>
+    <a href={`/from/${username}`} class="hover:underline" tabindex="-1"
+      >{username}</a
+    >
+  </footer>
 </Layout>
 
 <script>
