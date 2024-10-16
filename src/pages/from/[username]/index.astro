@@ -40,6 +40,7 @@ const { username } = Astro.params;
     class="flex flex-col md:fixed bottom-0 z-10 w-[300px] p-page md:mb-[26px]"
   >
     <h1 class="text-6xl font-mono tracking-tighter">Benjamin Oertel</h1>
+    <h2 class="font-mono text-muted">San Francisco, CA</h2>
   </Sidebar>
 
   <section
@@ -48,10 +49,7 @@ const { username } = Astro.params;
   >
     {
       photos.map((photo, index) => (
-        <figure
-          class="grid break-inside-avoid relative group mb-[var(--gap)] last:mb-0"
-          style="grid-template-rows: 1fr auto;"
-        >
+        <figure class="break-inside-avoid relative group mb-[var(--gap)] last:mb-0">
           <a href={`/from/${username}/${photo.id}`} class="group/photo">
             <Photo
               id={photo.id}

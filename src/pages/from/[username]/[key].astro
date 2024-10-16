@@ -113,9 +113,11 @@ const { username } = Astro.params;
 </Layout>
 
 <script>
+  import { navigate } from "astro:transitions/client";
   window.addEventListener("keydown", function (evt) {
     if (evt.key === "Escape") {
-      history.back();
+      const usernameLink = document.querySelector("footer > a");
+      navigate(usernameLink);
     }
   });
 </script>
