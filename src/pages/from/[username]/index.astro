@@ -40,7 +40,6 @@ const { username } = Astro.params;
     class="flex flex-col md:fixed bottom-0 z-10 w-[300px] p-page md:mb-[26px]"
   >
     <h1 class="text-6xl font-mono tracking-tighter">Benjamin Oertel</h1>
-    <h2 class="font-mono text-muted">San Francisco, CA</h2>
   </Sidebar>
 
   <section
@@ -64,7 +63,7 @@ const { username } = Astro.params;
 
   <footer
     style="grid-area: footer"
-    class="bg-black sticky bottom-0 py-page z-10 text-sm flex items-center pr-page"
+    class="bg-black sticky bottom-0 py-page z-10 text-sm flex items-center pr-page md:pl-page"
   >
     <span class="text-muted">just photos from&nbsp;</span>
     <a href={`/from/${username}`} class="hover:underline" tabindex="-1"
