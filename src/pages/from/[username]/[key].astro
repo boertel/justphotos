@@ -110,20 +110,32 @@ const { username } = Astro.params;
       >{username}</a
     >
   </footer>
+  <on-escape data-username={username}></on-escape>
 </Layout>
 
-<script define:vars={{ username }}>
+<script>
   import { navigate } from "astro:transitions/client";
-  window.addEventListener("keydown", function (evt) {
-    if (evt.key === "Escape") {
-      if (
-        URL.canParse(document.referrer) &&
-        new URL(document.referrer).origin === window.location.origin
-      ) {
-        history.back();
-      } else {
-        navigate(`/from/${username}`);
+  class OnEscape extends HTMLElement {
+    onKeyDown(evt) {
+      if (evt.key === "Escape") {
+        if (
+          URL.canParse(document.referrer) &&
+          new URL(document.referrer).origin === window.location.origin
+        ) {
+          history.back();
+        } else {
+          navigate(`/from/${this.dataset.username}`);
+        }
       }
     }
-  });
+    connectedCallback() {
+      this._onKeyDown = this.onKeyDown.bind(this);
+      window.addEventListener("keydown", this._onKeyDown);
+    }
+
+    disconnectedCallback() {
+      window.removeEventListener("keydown", this._onKeyDown);
+    }
+  }
+  customElements.define("on-escape", OnEscape);
 </script>
