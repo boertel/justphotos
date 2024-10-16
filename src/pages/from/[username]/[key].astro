@@ -116,6 +116,8 @@ const { username } = Astro.params;
 <script>
   import { navigate } from "astro:transitions/client";
   class OnEscape extends HTMLElement {
+    _onKeyDown: any;
+
     onKeyDown(evt) {
       if (evt.key === "Escape") {
         if (
