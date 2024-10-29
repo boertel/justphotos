@@ -2,6 +2,9 @@ const cachingMiddleware = async (
   { request }: { request: Request },
   next: () => Promise<Response>,
 ) => {
+  if (request.method !== "GET") {
+    return next();
+  }
   // caches.default is only available on cloudflare workers
   // other platforms implementing the Web Cache API require using the `open` method
   // `const cache = await caches.open("default")`
