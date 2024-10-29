@@ -2,7 +2,10 @@ import type { APIContext } from "astro";
 import exifr from "exifr";
 
 export async function POST({ request, locals }: APIContext) {
-  const { R2, API_KEY } = locals.runtime.env;
+  const {
+    env: { R2, API_KEY },
+    caches,
+  } = locals.runtime;
 
   const apiKey = request.headers.get("x-api-key");
 
@@ -65,6 +68,10 @@ export async function POST({ request, locals }: APIContext) {
   const httpMetadata = {
     "Content-Type": media.type,
   };
+
+  const requestIndex = new Request(`${request.url.origin}/from/ben`);
+  // @ts-ignore
+  await caches.default.delete(requestIndex);
 
   const result = await R2.put(key, media, {
     httpMetadata,

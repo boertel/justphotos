@@ -3,28 +3,35 @@ import Layout from "@layouts/Layout.astro";
 import Sidebar from "@components/Sidebar.astro";
 import Logo from "@components/Logo.astro";
 import Photo from "@components/Photo.astro";
-import { cache, CachedResponse } from "@utils/index";
+import { cacheHeader } from "pretty-cache-header";
 
-const response = await cache(
-  { locals: Astro.locals, request: Astro.request },
-  async ({ R2 }) => {
-    const prefix = `${Astro.params.username}/original`;
-    const { objects } = await R2.list({
-      prefix,
-      include: ["customMetadata"],
-      limit: 100,
-    });
-    const photos = objects
-      .map((object) => {
-        return object.customMetadata;
-      })
-      .sort((a, z) => z.timestamp - a.timestamp);
-    return new CachedResponse(photos);
-  },
-);
+const prefix = `${Astro.params.username}/original`;
+const { objects } = await Astro.locals.runtime.env.R2.list({
+  prefix,
+  include: ["customMetadata"],
+  limit: 100,
+});
 
-const photos = await response.json();
+const photos = objects
+  .map((object) => {
+    return object.customMetadata;
+  })
+  .sort((a, z) => z.timestamp - a.timestamp);
+
 const { username } = Astro.params;
+const now = new Date().toLocaleString();
+
+Astro.response.headers.set(
+  "Cache-Control",
+  cacheHeader({
+    public: true,
+    maxAge: "30sec",
+    sMaxage: "1min",
+    //maxAge: "5min",
+    //sMaxage: "1hour",
+    //staleWhileRevalidate: "2min",
+  }),
+);
 ---
 
 <Layout
@@ -72,4 +79,8 @@ const { username } = Astro.params;
       >{username}</a
     >
   </footer>
+
+  <script is:inline define:vars={{ now }}>
+    console.log(now);
+  </script>
 </Layout>

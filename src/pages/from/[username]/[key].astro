@@ -8,34 +8,34 @@ import ApertureIcon from "phosphor-astro/Aperture.astro";
 import MetricsIcon from "phosphor-astro/Spinner.astro";
 import DateIcon from "phosphor-astro/CalendarBlank.astro";
 import LocationIcon from "phosphor-astro/MapPin.astro";
+import { cacheHeader } from "pretty-cache-header";
 
-import { cache, CachedResponse } from "@utils/index";
-
-const response = await cache(
-  { locals: Astro.locals, request: Astro.request },
-  async ({ R2 }) => {
-    const key = `${Astro.params.username}/original/${Astro.params.key}`;
-    const object = await R2.get(key);
-    if (!object) {
-      throw new Error(`Object not found: ${key}`);
-    }
-    return new CachedResponse(object.customMetadata, {
-      headers: { etag: object.httpEtag },
-    });
-  },
-);
-
-if (response.status !== 200) {
+const key = `${Astro.params.username}/original/${Astro.params.key}`;
+const object = await Astro.locals.runtime.env.R2.get(key);
+if (!object) {
   return Astro.redirect("/404");
 }
-
-const photo = await response.json();
+const photo = object.customMetadata;
 const { username } = Astro.params;
+
+const now = new Date().toLocaleString();
+
+Astro.response.headers.set(
+  "Cache-Control",
+  cacheHeader({
+    public: true,
+    maxAge: "1min",
+    sMaxage: "2min",
+    //maxAge: "1hour",
+    //sMaxage: "1week",
+    //staleWhileRevalidate: "2min",
+  }),
+);
 ---
 
 <Layout
   title="Benjamin Oertel"
-  class="grid grid-cols-[min-content_1fr] [grid-template-areas:'content_content''sidebar_sidebar''logo_footer'] md:grid-cols-[300px_auto] md:grid-rows-[min-content_1fr_min-content] md:[grid-template-areas:'logo_content''sidebar_content''footer_content']"
+  class="grid grid-cols-[min-content_1fr] [grid-template-areas:'''sidebar_sidebar''logo_footer'] md:grid-cols-[300px_auto] md:grid-rows-[min-content_1fr_min-content] md:[grid-template-areas:'logo_content''sidebar_content''footer_content']"
 >
   <Logo href="/" class="p-page sticky top-0" />
 
@@ -112,6 +112,10 @@ const { username } = Astro.params;
   </footer>
   <on-escape data-username={username}></on-escape>
 </Layout>
+
+<script is:inline define:vars={{ now }}>
+  console.log(now);
+</script>
 
 <script>
   import { navigate } from "astro:transitions/client";

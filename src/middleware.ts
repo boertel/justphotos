@@ -10,8 +10,9 @@ const cachingMiddleware = async (
   const cachedResponse = await cache.match(request);
 
   // return the cached response if there was one
-  if (cachedResponse) return cachedResponse;
-  else {
+  if (cachedResponse) {
+    return cachedResponse;
+  } else {
     // render a fresh response
     const response = await next();
 
