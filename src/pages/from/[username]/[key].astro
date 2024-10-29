@@ -35,7 +35,7 @@ Astro.response.headers.set(
 
 <Layout
   title="Benjamin Oertel"
-  class="grid grid-cols-[min-content_1fr] [grid-template-areas:'''sidebar_sidebar''logo_footer'] md:grid-cols-[300px_auto] md:grid-rows-[min-content_1fr_min-content] md:[grid-template-areas:'logo_content''sidebar_content''footer_content']"
+  class="grid grid-cols-[min-content_1fr] [grid-template-areas:'content_content''sidebar_sidebar''logo_footer'] md:grid-cols-[300px_auto] md:grid-rows-[min-content_1fr_min-content] md:[grid-template-areas:'logo_content''sidebar_content''footer_content']"
 >
   <Logo href="/" class="p-page sticky top-0" />
 
@@ -94,7 +94,7 @@ Astro.response.headers.set(
 
   <section
     style="grid-area: content;"
-    class="h-screen flex items-center justify-center"
+    class="md:h-screen flex items-center justify-center"
   >
     <Photo
       photo={photo}
