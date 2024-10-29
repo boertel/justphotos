@@ -17,20 +17,18 @@ async function cachingMiddleware(context, next) {
 
   // return the cached response if there was one
   if (cachedResponse) {
-    return cachedResponse.clone();
+    return cachedResponse;
   } else {
     // render a fresh response
     const response = await next();
 
     // add to cache
-    console.log("put", request.url);
-    console.log(
-      "waitUntil",
-      waitUntil(cache.put(request.url, response.clone())),
-    );
+    const cloned = response.clone();
+    cloned.headers.delete("X-Astro-Route-Type");
+    waitUntil(cache.put(request.url, cloned));
 
     // return fresh response
-    return response.clone();
+    return response;
   }
 }
 
