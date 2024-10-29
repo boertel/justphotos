@@ -69,7 +69,8 @@ export async function POST({ request, locals }: APIContext) {
     "Content-Type": media.type,
   };
 
-  const requestIndex = new Request(`${request.url.origin}/from/ben`);
+  const requestUrl = new URL(request.url);
+  const requestIndex = new Request(`${requestUrl.origin}/from/ben`);
   // @ts-ignore
   await caches.default.delete(requestIndex);
 
