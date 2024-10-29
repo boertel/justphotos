@@ -17,7 +17,7 @@ async function cachingMiddleware(context, next) {
 
   // return the cached response if there was one
   if (cachedResponse) {
-    return cachedResponse;
+    return cachedResponse.clone();
   } else {
     // render a fresh response
     const response = await next();
