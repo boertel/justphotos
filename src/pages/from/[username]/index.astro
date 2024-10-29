@@ -25,11 +25,9 @@ Astro.response.headers.set(
   "Cache-Control",
   cacheHeader({
     public: true,
-    maxAge: "30sec",
-    sMaxage: "1min",
-    //maxAge: "5min",
-    //sMaxage: "1hour",
-    //staleWhileRevalidate: "2min",
+    maxAge: "5min",
+    sMaxage: "1hour",
+    staleWhileRevalidate: "2min",
   }),
 );
 ---

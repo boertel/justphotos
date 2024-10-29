@@ -69,10 +69,9 @@ export async function POST({ request, locals }: APIContext) {
     "Content-Type": media.type,
   };
 
-  const requestUrl = new URL(request.url);
-  const requestIndex = new Request(`${requestUrl.origin}/from/ben`);
-  // @ts-ignore
-  await caches.default.delete(requestIndex);
+  const indexUrl = new URL(request.url);
+  indexUrl.pathname = `/from/ben`;
+  await caches.default.delete(indexUrl);
 
   const result = await R2.put(key, media, {
     httpMetadata,
