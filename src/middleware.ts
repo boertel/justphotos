@@ -1,16 +1,16 @@
-const cachingMiddleware = async (
-  { request }: { request: Request },
-  next: () => Promise<Response>,
-) => {
+async function cachingMiddleware(context, next) {
+  const { request, locals } = context;
   if (request.method !== "GET") {
     return next();
   }
   // caches.default is only available on cloudflare workers
   // other platforms implementing the Web Cache API require using the `open` method
   // `const cache = await caches.open("default")`
-  const cache = (caches as any).default as Cache;
+  const { caches } = locals.runtime;
+  const cache = caches.default;
 
   const cachedResponse = await cache.match(request);
+  console.log("match", request.url, cachedResponse);
 
   // return the cached response if there was one
   if (cachedResponse) {
@@ -20,17 +20,11 @@ const cachingMiddleware = async (
     const response = await next();
 
     // add to cache
-    await cache.put(request, response.clone());
+    console.log("put", request.url, await cache.put(request, response.clone()));
 
     // return fresh response
     return response;
   }
-};
+}
 
-export const onRequest =
-  // avoid using caches when it is not available. for example, when testing locally with node
-  typeof globalThis.CacheStorage === "function" &&
-  globalThis.caches instanceof globalThis.CacheStorage
-    ? cachingMiddleware
-    : // a middleware that does nothing
-      (_: any, next: any) => next();
+export const onRequest = cachingMiddleware;

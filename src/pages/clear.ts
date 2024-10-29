@@ -1,5 +1,11 @@
 import type { APIContext } from "astro";
 
+function createRequest(request: Request, pathname: string) {
+  const url = new URL(request.url);
+  url.pathname = pathname;
+  return new Request(url);
+}
+
 export async function POST({ request, locals }: APIContext) {
   const {
     env: { API_KEY },
@@ -12,7 +18,7 @@ export async function POST({ request, locals }: APIContext) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const pages = [new Request("https://justphotos.pages.dev/from/ben")];
+  const pages = [createRequest(request, "/from/ben")];
   return new Response(
     // @ts-ignore
     (await Promise.all(pages.map((page) => caches.default.delete(page)))).join(
