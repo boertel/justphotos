@@ -30,7 +30,7 @@ async function cachingMiddleware(context, next) {
     );
 
     // return fresh response
-    return response;
+    return response.clone();
   }
 }
 
