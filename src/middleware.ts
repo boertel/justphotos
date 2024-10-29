@@ -6,10 +6,13 @@ async function cachingMiddleware(context, next) {
   // caches.default is only available on cloudflare workers
   // other platforms implementing the Web Cache API require using the `open` method
   // `const cache = await caches.open("default")`
-  const { caches } = locals.runtime;
+  const {
+    caches,
+    ctx: { waitUntil },
+  } = locals.runtime;
   const cache = caches.default;
 
-  const cachedResponse = await cache.match(request);
+  const cachedResponse = await cache.match(request.url);
   console.log("match", request.url, cachedResponse);
 
   // return the cached response if there was one
@@ -20,7 +23,11 @@ async function cachingMiddleware(context, next) {
     const response = await next();
 
     // add to cache
-    console.log("put", request.url, await cache.put(request, response.clone()));
+    console.log("put", request.url);
+    console.log(
+      "waitUntil",
+      waitUntil(cache.put(request.url, response.clone())),
+    );
 
     // return fresh response
     return response;
