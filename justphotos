@@ -1,5 +1,10 @@
 #!/usr/bin/env zsh
 
+if [[ -z "$API_KEY" ]]; then
+  echo "API_KEY must be set"
+  exit 1
+fi
+
 DOMAIN=${DOMAIN:-"https://justphotos.pages.dev"}
 USERNAME="ben"
 PREFIX="/r2/"
@@ -7,12 +12,11 @@ TMP_DIR="/tmp/justphotos"
 
 mkdir -p $TMP_DIR
 
-
 function resize {
     EXTENSION="${3:-avif}"
     OUTPUT="$HASH-$2.$EXTENSION"
     TMP_FILE="$TMP_DIR/$OUTPUT"
-    convert $1 -auto-orient -resize $2% $TMP_FILE
+    magick $1 -auto-orient -resize $2% $TMP_FILE
     WIDTH=$(identify -format "%w" $TMP_FILE)
 
     upload "$USERNAME/$EXTENSION/$OUTPUT" "$TMP_FILE"
@@ -25,6 +29,7 @@ function upload {
     MEDIA="$2"
     EXTRAS="location='$LOCATION' $3"
     CMD="http --quiet -f POST $DOMAIN/r2/upload media@$MEDIA key=$KEY $EXTRAS X-Api-Key:$API_KEY"
+    #echo $CMD
     eval $CMD
 }
 
@@ -39,6 +44,11 @@ function process {
     echo "$DOMAIN/from/$USERNAME/$HASH"
 }
 
+
+if [[ $# -lt 2 ]]; then
+  echo "./justphotos \"<Location>\" ...photos"
+  exit 2
+fi
 
 LOCATION="$1"
 
