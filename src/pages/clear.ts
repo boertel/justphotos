@@ -1,3 +1,4 @@
+import type { CacheStorage } from "@cloudflare/workers-types";
 import type { APIContext } from "astro";
 
 function createRequest(request: Request, pathname: string) {
@@ -18,11 +19,23 @@ export async function POST({ request, locals }: APIContext) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const pages = [createRequest(request, "/from/ben")];
+  const formData = await request.formData();
+  const pages = ["/from/ben", ...(formData.getAll("page") as string[])].map(
+    (page) => {
+      return createRequest(request, page);
+    },
+  );
   return new Response(
-    // @ts-ignore
-    (await Promise.all(pages.map((page) => caches.default.delete(page)))).join(
-      " ",
+    JSON.stringify(
+      await Promise.all(pages.map((page) => clearCache(caches, page))),
     ),
   );
+}
+
+async function clearCache(caches: CacheStorage, page: Request) {
+  return {
+    page: page.url,
+    // @ts-ignore
+    cleared: await caches.default.delete(page),
+  };
 }
