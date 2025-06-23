@@ -1,11 +1,14 @@
 #!/usr/bin/env zsh
 
-if [[ -z "$API_KEY" ]]; then
-  echo "API_KEY must be set"
+if [[ -z "$JUST_PHOTOS_API_KEY" ]]; then
+  echo "JUST_PHOTOS_API_KEY must be set"
   exit 1
 fi
 
-DOMAIN=${DOMAIN:-"https://justphotos.pages.dev"}
+API_KEY=$JUST_PHOTOS_API_KEY
+
+DOMAIN=${JUST_PHOTOS_DOMAIN:-"https://justphotos.pages.dev"}
+
 USERNAME="ben"
 PREFIX="/r2/"
 TMP_DIR="/tmp/justphotos"
@@ -27,32 +30,32 @@ function resize {
 function upload {
     KEY="$1"
     MEDIA="$2"
-    EXTRAS="location='$LOCATION' $3"
-    CMD="http --quiet -f POST $DOMAIN/r2/upload media@$MEDIA key=$KEY $EXTRAS X-Api-Key:$API_KEY"
-    #echo $CMD
-    eval $CMD
+    EXTRAS="$3"
+    CMD="curl -s -X POST -H \"X-Api-Key: ${API_KEY}\" -F \"media=@$MEDIA\" -F \"key=$KEY\" $EXTRAS \"$DOMAIN/r2/upload\""
+    eval $CMD > /dev/null
 }
 
 function process {
     HASH=$(shasum $INPUT | cut -d ' ' -f 1)
-    SRCSET="$PREFIX$(resize $INPUT 10), $PREFIX$(resize $INPUT 25), $PREFIX$(resize $INPUT 50), $PREFIX$(resize $INPUT 100)"
+    RESIZE_10=$(resize $INPUT 10)
+    echo "RESIZE_10: $RESIZE_10"
+    RESIZE_25=$(resize $INPUT 25)
+    RESIZE_50=$(resize $INPUT 50)
+    RESIZE_100=$(resize $INPUT 100)
+    SRCSET="$PREFIX$RESIZE_10, $PREFIX$RESIZE_25, $PREFIX$RESIZE_50, $PREFIX$RESIZE_100"
 
     TMP_FILE="$TMP_DIR/$HASH.jpg"
     cp $INPUT $TMP_FILE
-    upload "$USERNAME/original/$HASH" "$TMP_FILE" "srcset=\"$SRCSET\""
+    upload "$USERNAME/original/$HASH" "$TMP_FILE" "-F srcset=\"$SRCSET\""
 
-    echo "$DOMAIN/from/$USERNAME/$HASH"
+    echo "$DOMAIN/from/$USERNAME/$HASH" | pbcopy
 }
 
 
-if [[ $# -lt 2 ]]; then
-  echo "./justphotos \"<Location>\" ...photos"
+if [[ $# -lt 1 ]]; then
+  echo "./justphotos ...photos"
   exit 2
 fi
-
-LOCATION="$1"
-
-shift
 
 for INPUT in "$@"; do
   if [ -f "$INPUT" ]; then
@@ -61,5 +64,7 @@ for INPUT in "$@"; do
     echo "File not found: $INPUT"
   fi
 done
+
+http --quiet -f POST "$DOMAIN/clear" X-Api-Key:$API_KEY
 
 rm -rf $TMP_DIR
