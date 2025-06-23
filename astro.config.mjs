@@ -9,6 +9,9 @@ export default defineConfig({
   redirects: {
     "/": "/from/ben",
   },
+  security: {
+    checkOrigin: false,
+  },
   integrations: [tailwind()],
   adapter: cloudflare({
     platformProxy: {
