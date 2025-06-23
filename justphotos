@@ -38,7 +38,6 @@ function upload {
 function process {
     HASH=$(shasum $INPUT | cut -d ' ' -f 1)
     RESIZE_10=$(resize $INPUT 10)
-    echo "RESIZE_10: $RESIZE_10"
     RESIZE_25=$(resize $INPUT 25)
     RESIZE_50=$(resize $INPUT 50)
     RESIZE_100=$(resize $INPUT 100)
@@ -46,16 +45,20 @@ function process {
 
     TMP_FILE="$TMP_DIR/$HASH.jpg"
     cp $INPUT $TMP_FILE
-    upload "$USERNAME/original/$HASH" "$TMP_FILE" "-F srcset=\"$SRCSET\""
+    upload "$USERNAME/original/$HASH" "$TMP_FILE" "-F srcset=\"$SRCSET\" -F location=\"$LOCATION\""
 
-    echo "$DOMAIN/from/$USERNAME/$HASH" | pbcopy
+    echo "$DOMAIN/from/$USERNAME/$HASH"
 }
 
 
-if [[ $# -lt 1 ]]; then
-  echo "./justphotos ...photos"
+if [[ $# -lt 2 ]]; then
+  echo "./justphotos LOCATION ...photos"
   exit 2
 fi
+
+LOCATION="$1"
+
+shift
 
 for INPUT in "$@"; do
   if [ -f "$INPUT" ]; then

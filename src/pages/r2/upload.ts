@@ -19,7 +19,6 @@ export async function POST({ request, locals }: APIContext) {
     return new Response("Missing media", { status: 400 });
   }
   const key = body.get("key") as string;
-  const location = body.get("location") as string;
 
   const fileData = await media.arrayBuffer();
 
@@ -35,6 +34,7 @@ export async function POST({ request, locals }: APIContext) {
   if (media.type === "image/jpeg") {
     const exifData = await exifr.parse(fileData);
     const srcset = body.get("srcset") as string;
+    const location = body.get("location") as string;
     let camera = `${exifData.Model}`;
     if (exifData.Make.toLowerCase() === "fujifilm") {
       camera = `${exifData.Make} ${camera}`;

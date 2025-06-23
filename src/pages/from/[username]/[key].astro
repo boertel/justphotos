@@ -46,7 +46,7 @@ Astro.response.headers.set(
       </li>
       <li class="flex gap-2 items-center">
         <ApertureIcon class="shrink-0" width="1em" height="1em" />{photo.lens}
-        <span class="opacity-60" title="35mm equivalent"
+        <span class={photo.lens ? "opacity-60" : ""} title="35mm equivalent"
           >{photo.focalLengthIn35mmFormat}mm</span
         >
       </li>
