@@ -45,20 +45,16 @@ function process {
 
     TMP_FILE="$TMP_DIR/$HASH.jpg"
     cp $INPUT $TMP_FILE
-    upload "$USERNAME/original/$HASH" "$TMP_FILE" "-F srcset=\"$SRCSET\" -F location=\"$LOCATION\""
+    upload "$USERNAME/original/$HASH" "$TMP_FILE" "-F srcset=\"$SRCSET\""
 
     echo "$DOMAIN/from/$USERNAME/$HASH"
 }
 
 
-if [[ $# -lt 2 ]]; then
-  echo "./justphotos LOCATION ...photos"
+if [[ $# -lt 1 ]]; then
+  echo "./justphotos ...photos"
   exit 2
 fi
-
-LOCATION="$1"
-
-shift
 
 for INPUT in "$@"; do
   if [ -f "$INPUT" ]; then
@@ -67,7 +63,5 @@ for INPUT in "$@"; do
     echo "File not found: $INPUT"
   fi
 done
-
-http --quiet -f POST "$DOMAIN/clear" X-Api-Key:$API_KEY
 
 rm -rf $TMP_DIR

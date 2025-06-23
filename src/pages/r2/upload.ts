@@ -80,6 +80,7 @@ export async function POST({ request, locals }: APIContext) {
     customMetadata,
     sha1,
   });
+  console.log("result", key, result);
   return new Response(key);
 }
 
